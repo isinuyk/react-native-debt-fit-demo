@@ -8,6 +8,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      initialRouteName="performance"
       screenOptions={{
         headerShown: false,
       }}

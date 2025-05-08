@@ -1,12 +1,19 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import {
+  Canvas,
+  Path,
+  Skia,
+  SweepGradient,
+  vec,
+  Shadow,
+} from '@shopify/react-native-skia';
 import Animated, {
   useSharedValue,
-  useAnimatedProps,
   withTiming,
   Easing,
+  useDerivedValue,
 } from 'react-native-reanimated';
-// import { Canvas, Path, Skia, SweepGradient, vec, Shadow } from '@shopify/react-native-skia';
 import { useTheme } from '@/context/ThemeContext';
 
 type CircularProgressProps = {
@@ -22,8 +29,6 @@ type CircularProgressProps = {
   subtitleStyle?: TextStyle;
 };
 
-// const AnimatedPath = Animated.createAnimatedComponent(Path);
-
 export const CircularProgress = ({
   progress,
   size,
@@ -38,7 +43,7 @@ export const CircularProgress = ({
 }: CircularProgressProps) => {
   const { theme } = useTheme();
   const animatedProgress = useSharedValue(0);
-  
+
   useEffect(() => {
     animatedProgress.value = withTiming(progress, {
       duration: 1500,
@@ -48,29 +53,81 @@ export const CircularProgress = ({
 
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
-  
-  // Create circle path
-  // const path = Skia.Path.Make();
-  // path.addCircle(center, center, radius);
 
-  const animatedProps = useAnimatedProps(() => {
+  const backgroundPath = Skia.Path.Make();
+  backgroundPath.addCircle(center, center, radius);
+
+  const animatedPath = useDerivedValue(() => {
     const sweepAngle = animatedProgress.value * 360;
-    
-    return {
-      // Only render up to current progress
-      start: 0,
-      end: sweepAngle,
-    };
-  });
+    const path = Skia.Path.Make();
+    path.addArc(
+      {
+        x: center - radius,
+        y: center - radius,
+        width: radius * 2,
+        height: radius * 2,
+      },
+      -90, // Start from top
+      sweepAngle
+    );
+    return path;
+  }, [animatedProgress]);
 
   return (
     <View style={[styles.container, { width: size, height: size }, style]}>
+      <Canvas style={{ flex: 1, height: size, width: size }}>
+        {/* Track circle */}
+        <Path
+          path={backgroundPath}
+          style="stroke"
+          strokeWidth={strokeWidth}
+          color={theme.progress.track}
+        />
 
-      
+        {/* Progress arc */}
+        <Path path={animatedPath} style="stroke" strokeWidth={strokeWidth}>
+          <SweepGradient
+            c={vec(center, center)}
+            colors={[
+              theme.progress.indicatorEnd,
+              theme.progress.indicatorStart,
+              theme.progress.indicatorEnd,
+            ]}
+          />
+          <Shadow
+            dx={0}
+            dy={1}
+            blur={6}
+            color={theme.progress.indicatorStart}
+          />
+        </Path>
+      </Canvas>
+
+      {/* Text content */}
       <View style={styles.content}>
-        {title && <Text style={[styles.title, { color: theme.text.secondary }, titleStyle]}>{title}</Text>}
-        <Text style={[styles.value, { color: theme.accent.primary }, valueStyle]}>{value}</Text>
-        {subtitle && <Text style={[styles.subtitle, { color: theme.text.secondary }, subtitleStyle]}>{subtitle}</Text>}
+        {title && (
+          <Text
+            style={[styles.title, { color: theme.text.secondary }, titleStyle]}
+          >
+            {title}
+          </Text>
+        )}
+        <Text
+          style={[styles.value, { color: theme.accent.primary }, valueStyle]}
+        >
+          {value}
+        </Text>
+        {subtitle && (
+          <Text
+            style={[
+              styles.subtitle,
+              { color: theme.text.secondary },
+              subtitleStyle,
+            ]}
+          >
+            {subtitle}
+          </Text>
+        )}
       </View>
     </View>
   );

@@ -11,76 +11,67 @@ import { useRouter } from 'expo-router';
 export default function ActivityScreen() {
   const { theme } = useTheme();
   const router = useRouter();
-  
+
   return (
-    <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
+    <View
+      style={[styles.container, { backgroundColor: theme.background.primary }]}
+    >
       <View style={styles.header}>
-        <UserAvatar 
-          imageUrl="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" 
+        <UserAvatar
+          imageUrl="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
           size={40}
         />
-        
+
         <Text style={[styles.headerTitle, { color: theme.text.primary }]}>
           ACTIVITY
         </Text>
-        
+
         <TouchableOpacity onPress={() => router.push('/settings')}>
           <Settings size={24} color={theme.text.primary} />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.content}>
         <View style={styles.infoCardsContainer}>
-          <InfoCard
-            title="Time Remaining"
-            value="1,096"
-            unit="days"
-          />
-          <InfoCard
-            title="Workout Fuel"
-            value="$320"
-            unit="/month"
-          />
+          <InfoCard title="Time Remaining" value="1,096" unit="days" />
+          <InfoCard title="Workout Fuel" value="$320" unit="/month" />
         </View>
-        
+
         <View style={styles.progressContainer}>
           <CircularProgress
             progress={0.64}
             size={240}
             strokeWidth={20}
             title="INTEREST BURNT"
-            value="$0"
+            value="$6,400"
             subtitle="of $10,400"
           />
         </View>
-        
+
         <View style={styles.paginationContainer}>
-          <View 
+          <View
             style={[
-              styles.paginationDot, 
-              styles.paginationDotActive, 
-              { backgroundColor: theme.accent.primary }
-            ]} 
+              styles.paginationDot,
+              styles.paginationDotActive,
+              { backgroundColor: theme.accent.primary },
+            ]}
           />
-          <View 
+          <View
             style={[
-              styles.paginationDot, 
-              { backgroundColor: theme.text.secondary }
-            ]} 
+              styles.paginationDot,
+              { backgroundColor: theme.text.secondary },
+            ]}
           />
-          <View 
+          <View
             style={[
-              styles.paginationDot, 
-              { backgroundColor: theme.text.secondary }
-            ]} 
+              styles.paginationDot,
+              { backgroundColor: theme.text.secondary },
+            ]}
           />
         </View>
-        
+
         <View style={styles.notificationsContainer}>
-          <NotificationBar
-            notificationCount={2}
-            title="new notifications"
-          />
+          <NotificationBar notificationCount={2} title="new notifications" />
         </View>
       </View>
     </View>
