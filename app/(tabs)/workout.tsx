@@ -6,7 +6,6 @@ import Header from '@/components/Header';
 
 export default function WorkoutScreen() {
   const { theme } = useTheme();
-
   return (
     <LinearGradient
       colors={theme.gradients.background}
