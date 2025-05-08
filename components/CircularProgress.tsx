@@ -1,100 +1,76 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { Flame } from 'lucide-react-native';
-import Svg, { Circle } from 'react-native-svg';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedProps,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+// import { Canvas, Path, Skia, SweepGradient, vec, Shadow } from '@shopify/react-native-skia';
+import { useTheme } from '@/context/ThemeContext';
 
-interface CircularProgressProps {
-  title: string;
+type CircularProgressProps = {
+  progress: number; // 0 to 1
+  size: number;
+  strokeWidth: number;
+  title?: string;
   value: string;
-  total: string;
-  progress: number;
-}
+  subtitle?: string;
+  style?: ViewStyle;
+  titleStyle?: TextStyle;
+  valueStyle?: TextStyle;
+  subtitleStyle?: TextStyle;
+};
 
-const CircularProgress: React.FC<CircularProgressProps> = ({
+// const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+export const CircularProgress = ({
+  progress,
+  size,
+  strokeWidth,
   title,
   value,
-  total,
-  progress,
-}) => {
+  subtitle,
+  style,
+  titleStyle,
+  valueStyle,
+  subtitleStyle,
+}: CircularProgressProps) => {
   const { theme } = useTheme();
-  const size = 240;
-  const strokeWidth = 4;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (progress * circumference);
+  const animatedProgress = useSharedValue(0);
+  
+  useEffect(() => {
+    animatedProgress.value = withTiming(progress, {
+      duration: 1500,
+      easing: Easing.bezierFn(0.16, 1, 0.3, 1),
+    });
+  }, [progress]);
 
-  // Create tick marks around the circle
-  const tickMarks = Array.from({ length: 60 }).map((_, index) => {
-    const rotation = index * 6; // 360 degrees / 60 ticks = 6 degrees per tick
-    const isLongTick = index % 5 === 0;
-    const tickLength = isLongTick ? 10 : 5;
+  const center = size / 2;
+  const radius = (size - strokeWidth) / 2;
+  
+  // Create circle path
+  // const path = Skia.Path.Make();
+  // path.addCircle(center, center, radius);
+
+  const animatedProps = useAnimatedProps(() => {
+    const sweepAngle = animatedProgress.value * 360;
     
-    return (
-      <View
-        key={index}
-        style={[
-          styles.tickMark,
-          {
-            height: tickLength,
-            transform: [
-              { rotate: `${rotation}deg` },
-              { translateY: -size / 2 + tickLength / 2 },
-            ],
-            backgroundColor: isLongTick 
-              ? 'rgba(255, 255, 255, 0.4)' 
-              : 'rgba(255, 255, 255, 0.2)',
-          },
-        ]}
-      />
-    );
+    return {
+      // Only render up to current progress
+      start: 0,
+      end: sweepAngle,
+    };
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tickMarksContainer}>
-        {tickMarks}
-      </View>
+    <View style={[styles.container, { width: size, height: size }, style]}>
+
       
-      <Svg width={size} height={size} style={styles.svg}>
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="rgba(255, 255, 255, 0.1)"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-        />
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={theme.colors.primary}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          fill="transparent"
-          transform={`rotate(-90, ${size / 2}, ${size / 2})`}
-        />
-      </Svg>
-      
-      <View style={styles.contentContainer}>
-        <View style={[styles.iconContainer, { backgroundColor: theme.colors.primary }]}>
-          <Flame size={24} color="white" />
-        </View>
-        
-        <Text style={[styles.title, { color: theme.colors.textPrimary }]}>
-          {title}
-        </Text>
-        
-        <Text style={[styles.value, { color: theme.colors.primary }]}>
-          {value}
-        </Text>
-        
-        <Text style={[styles.total, { color: theme.colors.textSecondary }]}>
-          {total}
-        </Text>
+      <View style={styles.content}>
+        {title && <Text style={[styles.title, { color: theme.text.secondary }, titleStyle]}>{title}</Text>}
+        <Text style={[styles.value, { color: theme.accent.primary }, valueStyle]}>{value}</Text>
+        {subtitle && <Text style={[styles.subtitle, { color: theme.text.secondary }, subtitleStyle]}>{subtitle}</Text>}
       </View>
     </View>
   );
@@ -102,53 +78,29 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: 240,
-    height: 240,
+    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  tickMarksContainer: {
+  content: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  tickMark: {
-    position: 'absolute',
-    width: 2,
-    borderRadius: 1,
-  },
-  svg: {
-    position: 'absolute',
-  },
-  contentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
   },
   title: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    letterSpacing: 1.2,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
     marginBottom: 8,
   },
   value: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 36,
-    marginBottom: 4,
+    fontSize: 28,
+    fontWeight: '700',
+    textAlign: 'center',
   },
-  total: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
+  subtitle: {
+    fontSize: 14,
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
-
-export default CircularProgress;

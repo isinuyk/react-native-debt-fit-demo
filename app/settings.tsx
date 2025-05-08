@@ -1,83 +1,121 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '@/hooks/useTheme';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { UserAvatar } from '@/components/UserAvatar';
+import { useTheme } from '@/context/ThemeContext';
+import { ChevronLeft, User, Bell, Lock, CircleHelp as HelpCircle, LogOut } from 'lucide-react-native';
+import { ThemeSelector } from '@/components/ThemeSelector';
 import { useRouter } from 'expo-router';
-import { X } from 'lucide-react-native';
-import ThemeSelector from '@/components/ThemeSelector';
+
+const settingsOptions = [
+  {
+    id: 'profile',
+    icon: User,
+    title: 'Profile',
+    description: 'Manage your profile information',
+  },
+  {
+    id: 'notifications',
+    icon: Bell,
+    title: 'Notifications',
+    description: 'Configure your notification preferences',
+  },
+  {
+    id: 'privacy',
+    icon: Lock,
+    title: 'Privacy & Security',
+    description: 'Control your data and privacy settings',
+  },
+  {
+    id: 'help',
+    icon: HelpCircle,
+    title: 'Help & Support',
+    description: 'Get help and contact support',
+  },
+];
 
 export default function SettingsScreen() {
-  const { theme, mode, setMode, themeScheme, setThemeScheme, availableThemes } = useTheme();
+  const { theme } = useTheme();
   const router = useRouter();
-
+  
   return (
-    <LinearGradient
-      colors={theme.gradients.background}
-      style={styles.container}
-    >
+    <View style={[styles.container, { backgroundColor: theme.background.primary }]}>
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: theme.colors.textPrimary }]}>
-          Settings
-        </Text>
         <TouchableOpacity 
-          style={styles.closeButton} 
+          style={styles.backButton} 
           onPress={() => router.back()}
         >
-          <X size={24} color={theme.colors.textPrimary} />
+          <ChevronLeft size={24} color={theme.text.primary} />
         </TouchableOpacity>
+        
+        <Text style={[styles.headerTitle, { color: theme.text.primary }]}>
+          Settings
+        </Text>
+        
+        <View style={styles.placeholder} />
       </View>
-
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={[styles.section, { backgroundColor: theme.colors.cardBackground }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
-            Appearance
-          </Text>
+      
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.profileSection}>
+          <UserAvatar 
+            imageUrl="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" 
+            size={80}
+          />
           
-          <View style={styles.themeSection}>
-            <Text style={[styles.themeTitle, { color: theme.colors.textSecondary }]}>
-              Mode
+          <View style={styles.profileInfo}>
+            <Text style={[styles.profileName, { color: theme.text.primary }]}>
+              Jane Doe
             </Text>
-            <View style={styles.themeOptions}>
-              {['light', 'dark'].map((themeMode) => (
-                <TouchableOpacity
-                  key={themeMode}
-                  style={[
-                    styles.themeOption,
-                    mode === themeMode && { 
-                      backgroundColor: theme.colors.cardBackgroundActive,
-                      borderColor: theme.colors.primary,
-                    },
-                    { borderColor: theme.colors.border }
-                  ]}
-                  onPress={() => setMode(themeMode as 'light' | 'dark')}
-                >
-                  <Text 
-                    style={[
-                      styles.themeOptionText, 
-                      { color: theme.colors.textPrimary },
-                      mode === themeMode && { color: theme.colors.primary }
-                    ]}
-                  >
-                    {themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.themeSection}>
-            <Text style={[styles.themeTitle, { color: theme.colors.textSecondary }]}>
-              Theme
+            <Text style={[styles.profileEmail, { color: theme.text.secondary }]}>
+              jane.doe@example.com
             </Text>
-            <ThemeSelector 
-              themes={availableThemes}
-              currentTheme={themeScheme}
-              onSelectTheme={setThemeScheme}
-            />
           </View>
         </View>
+        
+        <ThemeSelector />
+        
+        <View style={styles.optionsContainer}>
+          {settingsOptions.map((option) => (
+            <TouchableOpacity
+              key={option.id}
+              style={[
+                styles.optionItem,
+                { borderColor: theme.card.border }
+              ]}
+            >
+              <View style={styles.optionIconContainer}>
+                <option.icon size={20} color={theme.accent.primary} />
+              </View>
+              
+              <View style={styles.optionContent}>
+                <Text style={[styles.optionTitle, { color: theme.text.primary }]}>
+                  {option.title}
+                </Text>
+                <Text style={[styles.optionDescription, { color: theme.text.secondary }]}>
+                  {option.description}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+        
+        <TouchableOpacity
+          style={[
+            styles.logoutButton,
+            { backgroundColor: theme.card.background, borderColor: theme.card.border }
+          ]}
+        >
+          <LogOut size={20} color={theme.accent.tertiary} />
+          <Text style={[styles.logoutText, { color: theme.accent.tertiary }]}>
+            Log Out
+          </Text>
+        </TouchableOpacity>
+        
+        <View style={styles.spacer} />
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -87,64 +125,92 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 16,
+  },
+  backButton: {
+    padding: 4,
   },
   headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
     fontFamily: 'Inter-Bold',
-    fontSize: 20,
   },
-  closeButton: {
-    position: 'absolute',
-    right: 20,
-    top: 60,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  placeholder: {
+    width: 24,
   },
   scrollView: {
     flex: 1,
   },
-  scrollContent: {
-    padding: 16,
-  },
-  section: {
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 18,
-    marginBottom: 16,
-  },
-  themeSection: {
-    marginBottom: 24,
-  },
-  themeTitle: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  themeOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  themeOption: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    minWidth: 100,
+  profileSection: {
     alignItems: 'center',
+    padding: 24,
+    marginBottom: 16,
   },
-  themeOptionText: {
-    fontFamily: 'Inter-Medium',
+  profileInfo: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontFamily: 'Inter-Bold',
+  },
+  profileEmail: {
     fontSize: 14,
+    marginTop: 4,
+    fontFamily: 'Inter-Medium',
+  },
+  optionsContainer: {
+    padding: 16,
+  },
+  optionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  optionIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  optionContent: {
+    flex: 1,
+  },
+  optionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 4,
+  },
+  optionDescription: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginTop: 24,
+    gap: 8,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold',
+  },
+  spacer: {
+    height: 100,
   },
 });

@@ -1,208 +1,488 @@
-import { ThemeMode, ThemeScheme, Theme } from '@/types/theme';
+// Define theme types
+export type ThemeVariant = 'default' | 'greeny' | 'purple' | 'sunset';
 
-// Theme schemes for light mode
-const lightThemes: Record<ThemeScheme, Theme> = {
+export type ThemeScheme = {
+  name: string;
+  background: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    inverse: string;
+  };
+  card: {
+    background: string;
+    border: string;
+  };
+  button: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    disabled: string;
+  };
+  accent: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+  };
+  progress: {
+    track: string;
+    indicator: string;
+    indicatorStart: string;
+    indicatorEnd: string;
+  };
+  shadow: {
+    color: string;
+    offset: { width: number; height: number };
+    opacity: number;
+    radius: number;
+  };
+  border: {
+    width: number;
+    radius: number;
+  };
+  spacing: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
+  statusBar: 'light' | 'dark';
+};
+
+// Light theme variants
+export const lightThemes: Record<ThemeVariant, ThemeScheme> = {
   default: {
-    colors: {
-      primary: '#4ECDC4',
-      secondary: '#FF6B6B',
-      background: '#F5F7FA',
-      cardBackground: '#FFFFFF',
-      cardBackgroundActive: 'rgba(78, 205, 196, 0.1)',
-      tabBackgroundActive: 'rgba(78, 205, 196, 0.1)',
-      textPrimary: '#2D3748',
-      textSecondary: '#718096',
-      border: '#E2E8F0',
+    name: 'Light Default',
+    background: {
+      primary: '#F4F4F8',
+      secondary: '#FFFFFF',
+      tertiary: '#EAEAEE',
     },
-    gradients: {
-      background: ['#F5F7FA', '#F0F4F8'],
+    text: {
+      primary: '#202124',
+      secondary: '#5F6368',
+      accent: '#3184FF',
+      inverse: '#FFFFFF',
     },
-    shadows: {
-      small: {
-        shadowColor: '#718096',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-      },
-      medium: {
-        shadowColor: '#4A5568',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        elevation: 5,
-      },
+    card: {
+      background: '#FFFFFF',
+      border: '#E1E2E5',
     },
+    button: {
+      primary: '#3184FF',
+      secondary: '#1F9984',
+      accent: '#FE6A16',
+      disabled: '#C1C1C1',
+    },
+    accent: {
+      primary: '#3184FF', 
+      secondary: '#1F9984',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#E1E2E5',
+      indicator: '#3184FF',
+      indicatorStart: '#3184FF',
+      indicatorEnd: '#1F9984',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.1,
+      radius: 8,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'dark',
   },
   greeny: {
-    colors: {
-      primary: '#4ADE80',
-      secondary: '#FB923C',
-      background: '#F0FDF4',
-      cardBackground: '#FFFFFF',
-      cardBackgroundActive: 'rgba(74, 222, 128, 0.1)',
-      tabBackgroundActive: 'rgba(74, 222, 128, 0.1)',
-      textPrimary: '#14532D',
-      textSecondary: '#4D7C0F',
-      border: '#DCFCE7',
+    name: 'Light Green',
+    background: {
+      primary: '#F4F8F6',
+      secondary: '#FFFFFF',
+      tertiary: '#E8F0EB',
     },
-    gradients: {
-      background: ['#F0FDF4', '#ECFDF5'],
+    text: {
+      primary: '#202124',
+      secondary: '#5F6368',
+      accent: '#16A34A',
+      inverse: '#FFFFFF',
     },
-    shadows: {
-      small: {
-        shadowColor: '#16A34A',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-      },
-      medium: {
-        shadowColor: '#16A34A',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-      },
+    card: {
+      background: '#FFFFFF',
+      border: '#D7E5DD',
     },
+    button: {
+      primary: '#16A34A',
+      secondary: '#059669',
+      accent: '#FE6A16',
+      disabled: '#C1C1C1',
+    },
+    accent: {
+      primary: '#16A34A',
+      secondary: '#059669',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#E1E2E5',
+      indicator: '#16A34A',
+      indicatorStart: '#16A34A',
+      indicatorEnd: '#059669',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.1,
+      radius: 8,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'dark',
   },
-  bluey: {
-    colors: {
-      primary: '#60A5FA',
-      secondary: '#F472B6',
-      background: '#EFF6FF',
-      cardBackground: '#FFFFFF',
-      cardBackgroundActive: 'rgba(96, 165, 250, 0.1)',
-      tabBackgroundActive: 'rgba(96, 165, 250, 0.1)',
-      textPrimary: '#1E3A8A',
-      textSecondary: '#3B82F6',
-      border: '#DBEAFE',
+  purple: {
+    name: 'Light Purple',
+    background: {
+      primary: '#F6F4FA',
+      secondary: '#FFFFFF',
+      tertiary: '#F0E8F5',
     },
-    gradients: {
-      background: ['#EFF6FF', '#E0F2FE'],
+    text: {
+      primary: '#202124',
+      secondary: '#5F6368',
+      accent: '#8B5CF6',
+      inverse: '#FFFFFF',
     },
-    shadows: {
-      small: {
-        shadowColor: '#3B82F6',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 2,
-      },
-      medium: {
-        shadowColor: '#3B82F6',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-      },
+    card: {
+      background: '#FFFFFF',
+      border: '#E5D7F0',
     },
+    button: {
+      primary: '#8B5CF6',
+      secondary: '#6D28D9',
+      accent: '#FE6A16',
+      disabled: '#C1C1C1',
+    },
+    accent: {
+      primary: '#8B5CF6',
+      secondary: '#6D28D9',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#E1E2E5',
+      indicator: '#8B5CF6',
+      indicatorStart: '#8B5CF6',
+      indicatorEnd: '#6D28D9',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.1,
+      radius: 8,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'dark',
+  },
+  sunset: {
+    name: 'Light Sunset',
+    background: {
+      primary: '#FAF4F4',
+      secondary: '#FFFFFF',
+      tertiary: '#F5E8E8',
+    },
+    text: {
+      primary: '#202124',
+      secondary: '#5F6368',
+      accent: '#F43F5E',
+      inverse: '#FFFFFF',
+    },
+    card: {
+      background: '#FFFFFF',
+      border: '#F0D7D7',
+    },
+    button: {
+      primary: '#F43F5E',
+      secondary: '#E11D48',
+      accent: '#FB923C',
+      disabled: '#C1C1C1',
+    },
+    accent: {
+      primary: '#F43F5E',
+      secondary: '#E11D48',
+      tertiary: '#FB923C',
+    },
+    progress: {
+      track: '#E1E2E5',
+      indicator: '#F43F5E',
+      indicatorStart: '#F43F5E',
+      indicatorEnd: '#FB923C',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.1,
+      radius: 8,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'dark',
   },
 };
 
-// Theme schemes for dark mode
-const darkThemes: Record<ThemeScheme, Theme> = {
+// Dark theme variants
+export const darkThemes: Record<ThemeVariant, ThemeScheme> = {
   default: {
-    colors: {
-      primary: '#4ECDC4',
-      secondary: '#FF6B6B',
-      background: '#1A202C',
-      cardBackground: '#2D3748',
-      cardBackgroundActive: 'rgba(78, 205, 196, 0.2)',
-      tabBackgroundActive: 'rgba(78, 205, 196, 0.2)',
-      textPrimary: '#F7FAFC',
-      textSecondary: '#A0AEC0',
-      border: '#4A5568',
+    name: 'Dark Default',
+    background: {
+      primary: '#121214',
+      secondary: '#1D1D20',
+      tertiary: '#2D2D32',
     },
-    gradients: {
-      background: ['#1A202C', '#171923'],
+    text: {
+      primary: '#F0F0F4',
+      secondary: '#ADADB8',
+      accent: '#4A9DFF',
+      inverse: '#202124',
     },
-    shadows: {
-      small: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
-      },
-      medium: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 5,
-      },
+    card: {
+      background: '#1D1D20',
+      border: '#2D2D32',
     },
+    button: {
+      primary: '#4A9DFF',
+      secondary: '#1F9984',
+      accent: '#FE6A16',
+      disabled: '#515151',
+    },
+    accent: {
+      primary: '#4A9DFF',
+      secondary: '#1F9984',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#2D2D32',
+      indicator: '#4A9DFF',
+      indicatorStart: '#4A9DFF',
+      indicatorEnd: '#1F9984',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.3,
+      radius: 12,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'light',
   },
   greeny: {
-    colors: {
-      primary: '#4ADE80',
-      secondary: '#FB923C',
-      background: '#0F172A',
-      cardBackground: '#1E293B',
-      cardBackgroundActive: 'rgba(74, 222, 128, 0.2)',
-      tabBackgroundActive: 'rgba(74, 222, 128, 0.2)',
-      textPrimary: '#F7FAFC',
-      textSecondary: '#94A3B8',
-      border: '#334155',
+    name: 'Dark Green',
+    background: {
+      primary: '#121412',
+      secondary: '#1A1F1C',
+      tertiary: '#283228',
     },
-    gradients: {
-      background: ['#0F172A', '#0B1120'],
+    text: {
+      primary: '#F0F0F4',
+      secondary: '#ADADB8',
+      accent: '#22C55E',
+      inverse: '#202124',
     },
-    shadows: {
-      small: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
-      },
-      medium: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 5,
-      },
+    card: {
+      background: '#1A1F1C',
+      border: '#283228',
     },
+    button: {
+      primary: '#22C55E',
+      secondary: '#059669',
+      accent: '#FE6A16',
+      disabled: '#515151',
+    },
+    accent: {
+      primary: '#22C55E',
+      secondary: '#059669',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#283228',
+      indicator: '#22C55E',
+      indicatorStart: '#22C55E',
+      indicatorEnd: '#059669',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.3,
+      radius: 12,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'light',
   },
-  bluey: {
-    colors: {
-      primary: '#60A5FA',
-      secondary: '#F472B6',
-      background: '#0F172A',
-      cardBackground: '#1E293B',
-      cardBackgroundActive: 'rgba(96, 165, 250, 0.2)',
-      tabBackgroundActive: 'rgba(96, 165, 250, 0.2)',
-      textPrimary: '#F7FAFC',
-      textSecondary: '#94A3B8',
-      border: '#334155',
+  purple: {
+    name: 'Dark Purple',
+    background: {
+      primary: '#121214',
+      secondary: '#1D1921',
+      tertiary: '#2D2834',
     },
-    gradients: {
-      background: ['#0F172A', '#0B1120'],
+    text: {
+      primary: '#F0F0F4',
+      secondary: '#ADADB8',
+      accent: '#A78BFA',
+      inverse: '#202124',
     },
-    shadows: {
-      small: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
-      },
-      medium: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 5,
-      },
+    card: {
+      background: '#1D1921',
+      border: '#2D2834',
     },
+    button: {
+      primary: '#A78BFA',
+      secondary: '#8B5CF6',
+      accent: '#FE6A16',
+      disabled: '#515151',
+    },
+    accent: {
+      primary: '#A78BFA',
+      secondary: '#8B5CF6',
+      tertiary: '#FE6A16',
+    },
+    progress: {
+      track: '#2D2834',
+      indicator: '#A78BFA',
+      indicatorStart: '#A78BFA',
+      indicatorEnd: '#8B5CF6',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.3,
+      radius: 12,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'light',
+  },
+  sunset: {
+    name: 'Dark Sunset',
+    background: {
+      primary: '#141212',
+      secondary: '#1F1A1A',
+      tertiary: '#342828',
+    },
+    text: {
+      primary: '#F0F0F4',
+      secondary: '#ADADB8',
+      accent: '#FB7185',
+      inverse: '#202124',
+    },
+    card: {
+      background: '#1F1A1A',
+      border: '#342828',
+    },
+    button: {
+      primary: '#FB7185',
+      secondary: '#F43F5E',
+      accent: '#FB923C',
+      disabled: '#515151',
+    },
+    accent: {
+      primary: '#FB7185',
+      secondary: '#F43F5E',
+      tertiary: '#FB923C',
+    },
+    progress: {
+      track: '#342828',
+      indicator: '#FB7185',
+      indicatorStart: '#FB7185',
+      indicatorEnd: '#FB923C',
+    },
+    shadow: {
+      color: '#000000',
+      offset: { width: 0, height: 2 },
+      opacity: 0.3,
+      radius: 12,
+    },
+    border: {
+      width: 1,
+      radius: 12,
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+    },
+    statusBar: 'light',
   },
 };
-
-export const themes: Record<ThemeMode, Record<ThemeScheme, Theme>> = {
-  light: lightThemes,
-  dark: darkThemes,
-};
-
-export const availableThemeSchemes: ThemeScheme[] = ['default', 'greeny', 'bluey'];

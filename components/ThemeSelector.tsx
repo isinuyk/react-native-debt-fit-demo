@@ -1,108 +1,175 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { ThemeScheme } from '@/types/theme';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useTheme } from '@/context/ThemeContext';
+import { Moon, Sun } from 'lucide-react-native';
+import { ThemeVariant } from '@/constants/themes';
 
-interface ThemeSelectorProps {
-  themes: ThemeScheme[];
-  currentTheme: ThemeScheme;
-  onSelectTheme: (theme: ThemeScheme) => void;
-}
-
-const ThemeSelector: React.FC<ThemeSelectorProps> = ({
-  themes,
-  currentTheme,
-  onSelectTheme,
-}) => {
-  const { theme } = useTheme();
-
-  const getThemeLabel = (themeScheme: ThemeScheme): string => {
-    switch (themeScheme) {
-      case 'default':
-        return 'Teal';
-      case 'greeny':
-        return 'Green';
-      case 'bluey':
-        return 'Blue';
-      default:
-        return themeScheme.charAt(0).toUpperCase() + themeScheme.slice(1);
-    }
-  };
-
-  const getThemeColor = (themeScheme: ThemeScheme): string => {
-    switch (themeScheme) {
-      case 'default':
-        return '#4ECDC4';
-      case 'greeny':
-        return '#4ADE80';
-      case 'bluey':
-        return '#60A5FA';
-      default:
-        return '#4ECDC4';
-    }
-  };
-
+export const ThemeSelector = () => {
+  const { theme, isDark, toggleDarkMode, themeVariant, setThemeVariant } = useTheme();
+  
+  const themeOptions: Array<{ value: ThemeVariant, label: string }> = [
+    { value: 'default', label: 'Default' },
+    { value: 'greeny', label: 'Green' },
+    { value: 'purple', label: 'Purple' },
+    { value: 'sunset', label: 'Sunset' },
+  ];
+  
   return (
     <View style={styles.container}>
-      {themes.map((themeScheme) => (
+      <Text style={[styles.title, { color: theme.text.primary }]}>
+        Appearance
+      </Text>
+      
+      <View style={styles.modeSelector}>
         <TouchableOpacity
-          key={themeScheme}
           style={[
-            styles.themeOption,
-            currentTheme === themeScheme && { 
-              backgroundColor: theme.colors.cardBackgroundActive,
-              borderColor: theme.colors.primary,
+            styles.modeButton,
+            {
+              backgroundColor: !isDark ? theme.accent.primary : 'transparent',
+              borderColor: theme.card.border,
             },
-            { borderColor: theme.colors.border }
           ]}
-          onPress={() => onSelectTheme(themeScheme)}
+          onPress={() => !isDark ? null : toggleDarkMode()}
         >
-          <View 
-            style={[
-              styles.colorCircle, 
-              { backgroundColor: getThemeColor(themeScheme) }
-            ]} 
+          <Sun
+            size={20}
+            color={!isDark ? theme.text.inverse : theme.text.secondary}
           />
-          <Text 
+          <Text
             style={[
-              styles.themeText, 
-              { color: theme.colors.textPrimary },
-              currentTheme === themeScheme && { color: theme.colors.primary }
+              styles.modeText,
+              {
+                color: !isDark ? theme.text.inverse : theme.text.secondary,
+              },
             ]}
           >
-            {getThemeLabel(themeScheme)}
+            Light
           </Text>
         </TouchableOpacity>
-      ))}
+        
+        <TouchableOpacity
+          style={[
+            styles.modeButton,
+            {
+              backgroundColor: isDark ? theme.accent.primary : 'transparent',
+              borderColor: theme.card.border,
+            },
+          ]}
+          onPress={() => isDark ? null : toggleDarkMode()}
+        >
+          <Moon
+            size={20}
+            color={isDark ? theme.text.inverse : theme.text.secondary}
+          />
+          <Text
+            style={[
+              styles.modeText,
+              {
+                color: isDark ? theme.text.inverse : theme.text.secondary,
+              },
+            ]}
+          >
+            Dark
+          </Text>
+        </TouchableOpacity>
+      </View>
+      
+      <Text style={[styles.sectionTitle, { color: theme.text.primary }]}>
+        Theme Colors
+      </Text>
+      
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.themesContainer}
+      >
+        {themeOptions.map((option) => (
+          <TouchableOpacity
+            key={option.value}
+            style={[
+              styles.themeOption,
+              {
+                borderColor: themeVariant === option.value ? theme.accent.primary : theme.card.border,
+              },
+            ]}
+            onPress={() => setThemeVariant(option.value)}
+          >
+            <View
+              style={[
+                styles.themePreview,
+                {
+                  backgroundColor: isDark 
+                    ? option.value === 'default' ? '#4A9DFF' 
+                    : option.value === 'greeny' ? '#22C55E'
+                    : option.value === 'purple' ? '#A78BFA'
+                    : '#FB7185'
+                    : option.value === 'default' ? '#3184FF'
+                    : option.value === 'greeny' ? '#16A34A'
+                    : option.value === 'purple' ? '#8B5CF6'
+                    : '#F43F5E',
+                },
+              ]}
+            />
+            <Text style={[styles.themeLabel, { color: theme.text.primary }]}>
+              {option.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
+    padding: 16,
   },
-  themeOption: {
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  modeSelector: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  modeButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
+    justifyContent: 'center',
     borderWidth: 1,
-    minWidth: 100,
+    padding: 12,
+    gap: 8,
   },
-  colorCircle: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  themeText: {
-    fontFamily: 'Inter-Medium',
+  modeText: {
     fontSize: 14,
+    fontWeight: '600',
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  themesContainer: {
+    paddingVertical: 8,
+    gap: 12,
+  },
+  themeOption: {
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 12,
+    padding: 8,
+    width: 80,
+  },
+  themePreview: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginBottom: 8,
+  },
+  themeLabel: {
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
-
-export default ThemeSelector;

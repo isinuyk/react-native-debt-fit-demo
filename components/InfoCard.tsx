@@ -1,96 +1,81 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { Clock, DollarSign, CircleHelp as HelpCircle } from 'lucide-react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Info } from 'lucide-react-native'; 
+import { useTheme } from '@/context/ThemeContext';
 
-interface InfoCardProps {
+type InfoCardProps = {
   title: string;
   value: string;
-  unit: string;
-  iconName: string;
-}
+  unit?: string;
+  onPress?: () => void;
+  info?: boolean;
+};
 
-const InfoCard: React.FC<InfoCardProps> = ({
-  title,
-  value,
-  unit,
-  iconName,
-}) => {
+export const InfoCard = ({ title, value, unit, onPress, info = true }: InfoCardProps) => {
   const { theme } = useTheme();
   
-  const renderIcon = () => {
-    switch (iconName) {
-      case 'clock':
-        return <Clock size={16} color={theme.colors.textSecondary} />;
-      case 'dollar-sign':
-        return <DollarSign size={16} color={theme.colors.textSecondary} />;
-      default:
-        return <HelpCircle size={16} color={theme.colors.textSecondary} />;
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.titleRow}>
-        <Text style={[styles.title, { color: theme.colors.textSecondary }]}>
-          {title}
-        </Text>
-        <View style={styles.iconContainer}>
-          {renderIcon()}
-        </View>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.card.background,
+          borderColor: theme.card.border,
+        },
+      ]}
+      onPress={onPress}
+      disabled={!onPress}
+      activeOpacity={onPress ? 0.8 : 1}
+    >
+      <View style={styles.titleContainer}>
+        <Text style={[styles.title, { color: theme.text.secondary }]}>{title}</Text>
+        {info && (
+          <Info size={16} color={theme.text.secondary} />
+        )}
       </View>
-      
-      <View style={styles.valueRow}>
-        <Text 
-          style={[
-            styles.value, 
-            { color: title === 'Time Remaining' ? theme.colors.primary : theme.colors.textPrimary }
-          ]}
-        >
+      <View style={styles.valueContainer}>
+        <Text style={[styles.value, { color: theme.accent.primary }]}>
           {value}
         </Text>
-        <Text style={[styles.unit, { color: theme.colors.textSecondary }]}>
-          {unit}
-        </Text>
+        {unit && (
+          <Text style={[styles.unit, { color: theme.text.secondary }]}>
+            {unit}
+          </Text>
+        )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 16,
+    minWidth: 150,
   },
-  titleRow: {
+  titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
+    gap: 6,
   },
   title: {
-    fontFamily: 'Inter-Regular',
     fontSize: 14,
-    marginRight: 4,
+    fontWeight: '500',
   },
-  iconContainer: {
-    width: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  valueRow: {
+  valueContainer: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'flex-end',
   },
   value: {
-    fontFamily: 'Inter-Bold',
     fontSize: 24,
-    marginRight: 2,
+    fontWeight: '700',
   },
   unit: {
-    fontFamily: 'Inter-Regular',
     fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 4,
+    marginBottom: 3,
   },
 });
-
-export default InfoCard;
