@@ -8,7 +8,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      initialRouteName="performance"
+      initialRouteName="index"
       screenOptions={{
         headerShown: false,
       }}
@@ -21,9 +21,9 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="activity"
+        name="/"
         options={{
-          href: '/activity',
+          href: '/index',
         }}
       />
       <Tabs.Screen

@@ -12,6 +12,7 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import { View, ActivityIndicator } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function AppLayout() {
   useFrameworkReady();
@@ -43,10 +44,12 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <StatusBar style="auto" />
-        <AppLayout />
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <StatusBar style="auto" />
+          <AppLayout />
+        </ThemeProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

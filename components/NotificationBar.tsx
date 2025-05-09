@@ -1,5 +1,11 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import { Bell } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -10,10 +16,14 @@ type NotificationBarProps = {
   onPress?: () => void;
 };
 
-export const NotificationBar = ({ notificationCount, title, onPress }: NotificationBarProps) => {
+export const NotificationBar = ({
+  notificationCount,
+  title,
+  onPress,
+}: NotificationBarProps) => {
   const { theme } = useTheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ['25%', '50%', '75%'];
+  const snapPoints = ['12%', '55%', '85%'];
 
   const handlePress = useCallback(() => {
     if (onPress) {
@@ -25,52 +35,68 @@ export const NotificationBar = ({ notificationCount, title, onPress }: Notificat
 
   return (
     <>
-      <TouchableOpacity
-        style={[
-          styles.container,
-          {
-            backgroundColor: theme.card.background,
-            borderColor: theme.card.border,
-          },
-        ]}
-        onPress={handlePress}
-        activeOpacity={0.8}
-      >
-        <View style={styles.content}>
-          <Bell size={18} color={theme.text.secondary} />
-          <Text style={[styles.title, { color: theme.text.primary }]}>
-            {notificationCount} {title}
-          </Text>
-        </View>
-      </TouchableOpacity>
-
       <BottomSheet
         ref={bottomSheetRef}
-        index={-1}
+        index={0}
         snapPoints={snapPoints}
-        enablePanDownToClose
-        backgroundStyle={{ backgroundColor: theme.card.background }}
-        handleIndicatorStyle={{ backgroundColor: theme.text.secondary }}
+        style={{
+          borderColor: theme.background.secondary,
+          backgroundColor: theme.background.secondary,
+          borderTopLeftRadius: 20,
+          borderWidth: 3,
+          borderTopRightRadius: 20,
+          shadowColor: theme.background.secondary,
+          shadowOffset: { width: 15, height: 22 },
+          shadowOpacity: 0.25,
+          shadowRadius: 15,
+        }}
+        backgroundStyle={{
+          backgroundColor: theme.background.primary,
+          borderStartColor: theme.card.border,
+          borderTopColor: theme.card.border,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: theme.text.secondary,
+        }}
       >
-        <View style={[styles.bottomSheetContent, { backgroundColor: theme.card.background }]}>
-          <Text style={[styles.bottomSheetTitle, { color: theme.text.primary }]}>
-            {title}
+        <View
+          style={[
+            styles.bottomSheetContent,
+            { backgroundColor: theme.background.primary },
+          ]}
+        >
+          <Text
+            style={[styles.bottomSheetTitle, { color: theme.text.primary }]}
+          >
+            {notificationCount} {title}
           </Text>
           {/* Sample notification content */}
-          <View style={[styles.notification, { borderColor: theme.card.border }]}>
-            <Text style={[styles.notificationTitle, { color: theme.text.primary }]}>
+          <View
+            style={[styles.notification, { borderColor: theme.card.border }]}
+          >
+            <Text
+              style={[styles.notificationTitle, { color: theme.text.primary }]}
+            >
               Workout reminder
             </Text>
-            <Text style={[styles.notificationDesc, { color: theme.text.secondary }]}>
+            <Text
+              style={[styles.notificationDesc, { color: theme.text.secondary }]}
+            >
               Don't forget your scheduled workout today at 6:00 PM.
             </Text>
           </View>
-          
-          <View style={[styles.notification, { borderColor: theme.card.border }]}>
-            <Text style={[styles.notificationTitle, { color: theme.text.primary }]}>
+
+          <View
+            style={[styles.notification, { borderColor: theme.card.border }]}
+          >
+            <Text
+              style={[styles.notificationTitle, { color: theme.text.primary }]}
+            >
               Achievement unlocked
             </Text>
-            <Text style={[styles.notificationDesc, { color: theme.text.secondary }]}>
+            <Text
+              style={[styles.notificationDesc, { color: theme.text.secondary }]}
+            >
               Congratulations! You've completed 5 workouts this week.
             </Text>
           </View>
@@ -82,11 +108,12 @@ export const NotificationBar = ({ notificationCount, title, onPress }: Notificat
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderRadius: 10,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 12,
+    borderTopWidth: 1,
+    alignItems: 'center',
+    paddingTop: 28,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingBottom: 12,
   },
   content: {
     flexDirection: 'row',
@@ -102,9 +129,10 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   bottomSheetTitle: {
+    textAlign: 'center',
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 16,
+    marginBottom: 26,
   },
   notification: {
     padding: 16,

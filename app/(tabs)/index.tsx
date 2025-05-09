@@ -23,7 +23,7 @@ export default function ActivityScreen() {
         />
 
         <Text style={[styles.headerTitle, { color: theme.text.primary }]}>
-          ACTIVITY
+          MY ACTIVITY
         </Text>
 
         <TouchableOpacity onPress={() => router.push('/settings')}>
@@ -40,9 +40,8 @@ export default function ActivityScreen() {
         <View style={styles.progressContainer}>
           <CircularProgress
             progress={0.64}
-            size={240}
+            size={280}
             strokeWidth={20}
-            title="INTEREST BURNT"
             value="$6,400"
             subtitle="of $10,400"
           />
@@ -70,9 +69,7 @@ export default function ActivityScreen() {
           />
         </View>
 
-        <View style={styles.notificationsContainer}>
-          <NotificationBar notificationCount={2} title="new notifications" />
-        </View>
+        <NotificationBar notificationCount={2} title="new notifications" />
       </View>
     </View>
   );
@@ -108,14 +105,12 @@ const styles = StyleSheet.create({
   progressContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
-    flex: 1,
+    marginVertical: 100,
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 24,
   },
   paginationDot: {
     width: 8,
@@ -124,9 +119,5 @@ const styles = StyleSheet.create({
   },
   paginationDotActive: {
     width: 24,
-  },
-  notificationsContainer: {
-    marginTop: 24,
-    marginBottom: 32,
   },
 });

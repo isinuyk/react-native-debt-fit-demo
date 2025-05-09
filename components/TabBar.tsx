@@ -1,15 +1,19 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import { Flame, Home, Dumbbell, Settings } from 'lucide-react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { Flame, Home, Dumbbell } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 import { useRouter, usePathname } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const TabBar = () => {
   const { theme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const tabs = [
     {
       name: 'performance',
@@ -18,10 +22,10 @@ export const TabBar = () => {
       route: '/performance',
     },
     {
-      name: 'activity',
+      name: '/',
       icon: Home,
       label: 'Activity',
-      route: '/activity',
+      route: '/',
     },
     {
       name: 'workout',
@@ -34,21 +38,25 @@ export const TabBar = () => {
   const isActive = (route: string) => pathname === route;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.card.background }]}>
+    <SafeAreaView
+      edges={['bottom']}
+      style={[styles.container, { backgroundColor: theme.background.primary }]}
+    >
       {tabs.map((tab) => {
+        console.log('Tab:', tab, pathname);
         const active = isActive(tab.route);
-        
+
         return (
           <TabButton
             key={tab.name}
             Icon={tab.icon}
             label={tab.label}
             active={active}
-            onPress={() => router.push(tab.route)}
+            onPress={() => router.push(tab.route as any)}
           />
         );
       })}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -59,18 +67,15 @@ type TabButtonProps = {
   onPress: () => void;
 };
 
-const TabButton = ({ Icon, label, active, onPress }: TabButtonProps) => {
+const TabButton = ({ Icon, active, onPress }: TabButtonProps) => {
   const { theme } = useTheme();
-  
+
   const animatedStyles = useAnimatedStyle(() => {
     return {
       backgroundColor: withTiming(
-        active ? theme.accent.primary : 'transparent',
+        active ? theme.accent.primary : theme.background.secondary,
         { duration: 200 }
       ),
-      transform: [
-        { scale: withTiming(active ? 1 : 0.9, { duration: 200 }) },
-      ],
     };
   }, [active, theme]);
 
@@ -80,23 +85,18 @@ const TabButton = ({ Icon, label, active, onPress }: TabButtonProps) => {
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           styles.iconContainer,
           animatedStyles,
+          { shadowColor: theme.background.secondary },
         ]}
       >
-        <Icon 
-          size={20} 
+        <Icon
+          size={30}
           color={active ? theme.text.inverse : theme.text.secondary}
         />
       </Animated.View>
-      
-      {active && (
-        <Text style={[styles.label, { color: theme.text.primary }]}>
-          {label}
-        </Text>
-      )}
     </TouchableOpacity>
   );
 };
@@ -104,11 +104,7 @@ const TabButton = ({ Icon, label, active, onPress }: TabButtonProps) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 70,
-    paddingBottom: 10,
-    paddingHorizontal: 16,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    paddingHorizontal: 40,
   },
   tabButton: {
     flex: 1,
@@ -116,11 +112,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   label: {
     fontSize: 12,
