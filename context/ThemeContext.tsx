@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import { lightThemes, darkThemes, ThemeScheme, ThemeVariant } from '@/constants/themes';
+import {
+  lightThemes,
+  darkThemes,
+  ThemeScheme,
+  ThemeVariant,
+} from '@/constants/themes';
+import * as SystemUI from 'expo-system-ui';
 
 type ThemeContextType = {
   theme: ThemeScheme;
@@ -22,7 +28,9 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const systemColorScheme = useColorScheme();
   const [isDark, setIsDark] = useState(systemColorScheme === 'dark');
   const [themeVariant, setThemeVariant] = useState<ThemeVariant>('default');
@@ -31,25 +39,29 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsDark(systemColorScheme === 'dark');
   }, [systemColorScheme]);
 
-  const theme = isDark 
-    ? darkThemes[themeVariant] || darkThemes.default 
+  const theme = isDark
+    ? darkThemes[themeVariant] || darkThemes.default
     : lightThemes[themeVariant] || lightThemes.default;
-  
+
   const toggleDarkMode = () => {
-    setIsDark(prev => !prev);
+    setIsDark((prev) => !prev);
   };
+
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(theme.background.primary);
+  }, [theme.background.primary]);
 
   const forceDarkMode = (value: boolean) => {
     setIsDark(value);
   };
 
   return (
-    <ThemeContext.Provider 
-      value={{ 
-        theme, 
-        isDark, 
-        themeVariant, 
-        setThemeVariant, 
+    <ThemeContext.Provider
+      value={{
+        theme,
+        isDark,
+        themeVariant,
+        setThemeVariant,
         toggleDarkMode,
         forceDarkMode,
       }}
